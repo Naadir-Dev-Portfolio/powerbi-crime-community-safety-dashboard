@@ -1,0 +1,388 @@
+table 'Fact Crime Monthly'
+	lineageTag: 3d3c8c00-f451-4c3d-bfda-a3d423b99692
+
+	measure 'Crime Incidents' = SUM('Fact Crime Monthly'[Crime Count])
+		formatString: #,##0
+		lineageTag: 91b4faca-f239-434d-9605-8e36adbb25ea
+
+	measure 'Latest Month Crime Incidents' = CALCULATE([Crime Incidents], FILTER(ALL('Dim Date'), 'Dim Date'[Month Start] = CALCULATE(MAX('Dim Date'[Month Start]), ALL('Dim Date'))))
+		formatString: #,##0
+		lineageTag: 394d2eee-4ae6-4e75-8980-8146bc43ce9f
+
+	measure 'Previous Month Crime Incidents' = CALCULATE([Crime Incidents], FILTER(ALL('Dim Date'), 'Dim Date'[Month Start] = EDATE(CALCULATE(MAX('Dim Date'[Month Start]), ALL('Dim Date')), -1)))
+		formatString: #,##0
+		lineageTag: 1f7851a9-d429-4611-b0d2-6e462958cf27
+
+	measure 'Latest Month Change' = [Latest Month Crime Incidents] - [Previous Month Crime Incidents]
+		formatString: #,##0;(#,##0)
+		lineageTag: 8715419d-ad64-4daf-960c-b78497f9a054
+
+	measure 'Latest Month Change %' = DIVIDE([Latest Month Change], [Previous Month Crime Incidents])
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: b523868b-5e5c-437a-accb-33672b75c10b
+
+	measure 'Latest 3M Crime Incidents' =
+			VAR LatestMonth =
+				MAX('Dim Date'[Month Start])
+			RETURN
+				CALCULATE(
+					[Crime Incidents],
+					FILTER(
+						ALL('Dim Date'),
+						'Dim Date'[Month Start] <= LatestMonth
+							&& 'Dim Date'[Month Start] > EDATE(LatestMonth, -3)
+					)
+				)
+		formatString: #,##0
+		lineageTag: 82170378-c6cd-4a56-8c4e-a01336e0975f
+
+	measure 'Previous 3M Crime Incidents' =
+			VAR LatestMonth =
+				MAX('Dim Date'[Month Start])
+			VAR WindowEnd =
+				EDATE(LatestMonth, -3)
+			RETURN
+				CALCULATE(
+					[Crime Incidents],
+					FILTER(
+						ALL('Dim Date'),
+						'Dim Date'[Month Start] <= WindowEnd
+							&& 'Dim Date'[Month Start] > EDATE(LatestMonth, -6)
+					)
+				)
+		formatString: #,##0
+		lineageTag: bd663a7f-7f4d-4741-a61c-df1fee1c416d
+
+	measure 'Latest 3M Change' = [Latest 3M Crime Incidents] - [Previous 3M Crime Incidents]
+		formatString: #,##0;(#,##0)
+		lineageTag: 5f6e9a84-906e-427d-8ebf-7efc82739141
+
+	measure 'Latest 3M Change %' = DIVIDE([Latest 3M Change], [Previous 3M Crime Incidents])
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: c44ef879-28bb-4f39-9f92-67e0777a81c8
+
+	measure 'Latest 12M Crime Incidents' =
+			VAR LatestMonth =
+				MAX('Dim Date'[Month Start])
+			RETURN
+				CALCULATE(
+					[Crime Incidents],
+					FILTER(
+						ALL('Dim Date'),
+						'Dim Date'[Month Start] <= LatestMonth
+							&& 'Dim Date'[Month Start] > EDATE(LatestMonth, -12)
+					)
+				)
+		formatString: #,##0
+		lineageTag: af4bac49-1bc8-4da9-9e11-284a49b37d29
+
+	measure 'Previous 12M Crime Incidents' =
+			VAR LatestMonth =
+				MAX('Dim Date'[Month Start])
+			VAR WindowEnd =
+				EDATE(LatestMonth, -12)
+			RETURN
+				CALCULATE(
+					[Crime Incidents],
+					FILTER(
+						ALL('Dim Date'),
+						'Dim Date'[Month Start] <= WindowEnd
+							&& 'Dim Date'[Month Start] > EDATE(LatestMonth, -24)
+					)
+				)
+		formatString: #,##0
+		lineageTag: 35343992-2d19-453a-86c7-d935515b15fb
+
+	measure 'Rolling 12M Change' = [Latest 12M Crime Incidents] - [Previous 12M Crime Incidents]
+		formatString: #,##0;(#,##0)
+		lineageTag: a4f97978-34c6-4fc9-9045-c597cf68fec4
+
+	measure 'Rolling 12M Change %' = DIVIDE([Rolling 12M Change], [Previous 12M Crime Incidents])
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: b241986b-806d-4bfc-9124-3bc6a18b0159
+
+	measure 'Crime Mix %' =
+			DIVIDE(
+				[Crime Incidents],
+				CALCULATE([Crime Incidents], REMOVEFILTERS('Dim Crime Type'))
+			)
+		formatString: 0.0%
+		lineageTag: 5e4eadce-cbd3-4ccd-a962-770e162c0b7a
+
+	measure 'Contribution to 12M Change %' =
+			DIVIDE(
+				[Rolling 12M Change],
+				CALCULATE([Rolling 12M Change], REMOVEFILTERS('Dim Crime Type'))
+			)
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: fcf60d64-9537-454d-bc9c-2f55bf84f276
+
+	measure 'Hotspot Pressure Index' =
+			DIVIDE(
+				[Latest 3M Crime Incidents],
+				DIVIDE([Previous 12M Crime Incidents], 4)
+			) * 100
+		formatString: 0.0
+		lineageTag: 79d73ca9-d2b0-4f4b-86ff-e9acd3da638e
+
+	measure 'Latest Month Label' = FORMAT(MAX('Dim Date'[Month Start]), "mmmm yyyy")
+		lineageTag: 9005cba0-56fb-467a-b309-7e88719e5c2b
+
+	measure 'Trend Direction Label' =
+			VAR ChangePct =
+				[Rolling 12M Change %]
+			RETURN
+				SWITCH(
+					TRUE(),
+					ISBLANK(ChangePct), BLANK(),
+					ChangePct > 0.03, "rising",
+					ChangePct < -0.03, "falling",
+					"stabilising"
+				)
+		lineageTag: 003f4896-d29c-40aa-8ca7-13f37220e57e
+
+	measure 'Top Crime Driver' =
+			VAR Candidates =
+				ADDCOLUMNS(
+					ALL('Dim Crime Type'[Crime Type]),
+					"__Change", [Rolling 12M Change]
+				)
+			VAR TopIncrease =
+				TOPN(
+					1,
+					FILTER(Candidates, [__Change] > 0),
+					[__Change], DESC,
+					'Dim Crime Type'[Crime Type], ASC
+				)
+			VAR TopDecrease =
+				TOPN(
+					1,
+					FILTER(Candidates, [__Change] < 0),
+					[__Change], ASC,
+					'Dim Crime Type'[Crime Type], ASC
+				)
+			RETURN
+				COALESCE(
+					MAXX(TopIncrease, 'Dim Crime Type'[Crime Type]),
+					MAXX(TopDecrease, 'Dim Crime Type'[Crime Type])
+				)
+		lineageTag: 870487f8-1006-4857-861c-7897ac148f0a
+
+	measure 'Top Force Under Pressure' =
+			VAR Candidates =
+				ADDCOLUMNS(
+					ALL('Dim Force'[Force Name]),
+					"__Pressure", [Hotspot Pressure Index],
+					"__Volume", [Latest 3M Crime Incidents]
+				)
+			VAR Ranked =
+				TOPN(
+					1,
+					FILTER(Candidates, [__Volume] >= 250),
+					[__Pressure], DESC,
+					[__Volume], DESC,
+					'Dim Force'[Force Name], ASC
+				)
+			RETURN
+				MAXX(Ranked, 'Dim Force'[Force Name])
+		lineageTag: ab70f078-1aa1-40a3-92a1-cc2cb2acbeaf
+
+	measure 'Headline Narrative' =
+			VAR LatestLabel =
+				[Latest Month Label]
+			VAR DirectionLabel =
+				[Trend Direction Label]
+			VAR ChangePct =
+				[Rolling 12M Change %]
+			VAR Driver =
+				[Top Crime Driver]
+			VAR ForceName =
+				[Top Force Under Pressure]
+			RETURN
+				IF(
+					ISBLANK(ChangePct),
+					BLANK(),
+					"As of "
+						& LatestLabel
+						& ", crime pressure is "
+						& DirectionLabel
+						& " ("
+						& FORMAT(ChangePct, "0.0%")
+						& " versus the previous 12 months). The main category driver is "
+						& COALESCE(Driver, "not available")
+						& ", while current pressure is strongest in "
+						& COALESCE(ForceName, "not available")
+						& "."
+				)
+		lineageTag: f94f150c-697b-499c-a30e-762ec8c66b36
+
+	measure 'YoY Crime Incidents' =
+			VAR LatestMonth =
+				MAX('Dim Date'[Month Start])
+			VAR PriorYearMonth =
+				EDATE(LatestMonth, -12)
+			RETURN
+				CALCULATE(
+					[Crime Incidents],
+					FILTER(
+						ALL('Dim Date'),
+						'Dim Date'[Month Start] = PriorYearMonth
+					)
+				)
+		formatString: #,##0
+		lineageTag: a1f10e01-2001-4001-9001-000000000001
+
+	measure 'YoY Change' = [Latest Month Crime Incidents] - [YoY Crime Incidents]
+		formatString: #,##0;(#,##0)
+		lineageTag: a1f10e01-2002-4002-9002-000000000002
+
+	measure 'YoY Change %' = DIVIDE([YoY Change], [YoY Crime Incidents])
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: a1f10e01-2003-4003-9003-000000000003
+
+	measure 'Rolling 3M Average' =
+			VAR LatestMonth =
+				MAX('Dim Date'[Month Start])
+			RETURN
+				DIVIDE(
+					CALCULATE(
+						[Crime Incidents],
+						FILTER(
+							ALL('Dim Date'),
+							'Dim Date'[Month Start] <= LatestMonth
+								&& 'Dim Date'[Month Start] > EDATE(LatestMonth, -3)
+						)
+					),
+					3
+				)
+		formatString: #,##0
+		lineageTag: a1f10e01-2004-4004-9004-000000000004
+
+	measure 'Rolling 12M Average' = DIVIDE([Latest 12M Crime Incidents], 12)
+		formatString: #,##0
+		lineageTag: a1f10e01-2005-4005-9005-000000000005
+
+	measure 'Force Rank by 12M Volume' =
+			IF(
+				HASONEVALUE('Dim Force'[Force Name]),
+				RANKX(
+					ALL('Dim Force'[Force Name]),
+					CALCULATE([Latest 12M Crime Incidents]),
+					,
+					DESC,
+					Dense
+				)
+			)
+		formatString: 0
+		lineageTag: a1f10e01-2006-4006-9006-000000000006
+
+	measure 'Crime Type Rank by 12M Change' =
+			IF(
+				HASONEVALUE('Dim Crime Type'[Crime Type]),
+				RANKX(
+					ALL('Dim Crime Type'[Crime Type]),
+					CALCULATE([Rolling 12M Change]),
+					,
+					DESC,
+					Dense
+				)
+			)
+		formatString: 0
+		lineageTag: a1f10e01-2007-4007-9007-000000000007
+
+	measure 'Force Share of 12M Total %' =
+			DIVIDE(
+				[Latest 12M Crime Incidents],
+				CALCULATE([Latest 12M Crime Incidents], REMOVEFILTERS('Dim Force'))
+			)
+		formatString: 0.0%
+		lineageTag: a1f10e01-2008-4008-9008-000000000008
+
+	measure 'Top Rising Crime Type' =
+			VAR Candidates =
+				ADDCOLUMNS(
+					ALL('Dim Crime Type'[Crime Type]),
+					"__Change", [Rolling 12M Change %]
+				)
+			VAR Ranked =
+				TOPN(
+					1,
+					FILTER(Candidates, [__Change] > 0),
+					[__Change], DESC,
+					'Dim Crime Type'[Crime Type], ASC
+				)
+			RETURN
+				MAXX(Ranked, 'Dim Crime Type'[Crime Type])
+		lineageTag: a1f10e01-2009-4009-9009-000000000009
+
+	measure 'Top Falling Crime Type' =
+			VAR Candidates =
+				ADDCOLUMNS(
+					ALL('Dim Crime Type'[Crime Type]),
+					"__Change", [Rolling 12M Change %]
+				)
+			VAR Ranked =
+				TOPN(
+					1,
+					FILTER(Candidates, [__Change] < 0),
+					[__Change], ASC,
+					'Dim Crime Type'[Crime Type], ASC
+				)
+			RETURN
+				MAXX(Ranked, 'Dim Crime Type'[Crime Type])
+		lineageTag: a1f10e01-2010-4010-9010-000000000010
+
+	column 'Date Key'
+		dataType: int64
+		isHidden
+		lineageTag: 41aac86a-e389-4f85-9888-1e4309a5b1ac
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column 'Crime Type Key'
+		dataType: int64
+		isHidden
+		lineageTag: 18d71dd7-5943-4230-9e63-d0241ccd3966
+		summarizeBy: none
+		sourceColumn: CrimeTypeKey
+
+	column 'Force Key'
+		dataType: int64
+		isHidden
+		lineageTag: c61071e7-10d1-4979-9b53-60a696610466
+		summarizeBy: none
+		sourceColumn: ForceKey
+
+	column 'Local Area Key'
+		dataType: int64
+		isHidden
+		lineageTag: 56892ae9-5868-472b-b93a-ba688576b6a2
+		summarizeBy: none
+		sourceColumn: LocalAreaKey
+
+	column 'Crime Count'
+		dataType: int64
+		lineageTag: 250f1cdc-74d7-4b3d-930e-b48a90418ccc
+		summarizeBy: sum
+		sourceColumn: CrimeCount
+
+	partition 'Fact Crime Monthly' = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents(CuratedDataFolder & "\fact_crime_monthly.csv"), [Delimiter=",", Columns=5, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(
+						Headers,
+						{
+							{"DateKey", Int64.Type},
+							{"CrimeTypeKey", Int64.Type},
+							{"ForceKey", Int64.Type},
+							{"LocalAreaKey", Int64.Type},
+							{"CrimeCount", Int64.Type}
+						},
+						"en-GB"
+					)
+				in
+					Typed
+

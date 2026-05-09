@@ -1,0 +1,70 @@
+table 'Dim Force'
+	lineageTag: 1b7cf2d7-f6f8-454b-8170-0e35169bd435
+
+	column 'Force Key'
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 1b1d331a-0625-411d-a293-39557cfe9165
+		summarizeBy: none
+		sourceColumn: ForceKey
+
+	column 'Force Id'
+		dataType: string
+		isHidden
+		lineageTag: 3f27076f-d496-488b-bad6-fdcda26356ee
+		summarizeBy: none
+		sourceColumn: ForceId
+
+	column 'Force Name'
+		dataType: string
+		lineageTag: 36a833c2-4b3b-444b-b4de-62850e0849fb
+		summarizeBy: none
+		sourceColumn: ForceName
+
+	column 'Force Short Name'
+		dataType: string
+		lineageTag: 71c8d9ed-1632-425c-ad8f-2835c6e2064c
+		summarizeBy: none
+		sourceColumn: ForceShortName
+
+	column Country
+		dataType: string
+		lineageTag: d9604f06-3255-4b78-8283-b718f4d1aeca
+		summarizeBy: none
+		sourceColumn: Country
+
+	column Latitude
+		dataType: double
+		lineageTag: 6212da2c-3a9e-4ede-90fc-d42e7fe46726
+		summarizeBy: none
+		sourceColumn: Latitude
+
+	column Longitude
+		dataType: double
+		lineageTag: 21e6eb5c-64eb-45f1-a112-6ee7ae3d3f7d
+		summarizeBy: none
+		sourceColumn: Longitude
+
+	partition 'Dim Force' = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents(CuratedDataFolder & "\dim_force.csv"), [Delimiter=",", Columns=7, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(
+						Headers,
+						{
+							{"ForceKey", Int64.Type},
+							{"ForceId", type text},
+							{"ForceName", type text},
+							{"ForceShortName", type text},
+							{"Country", type text},
+							{"Latitude", type number},
+							{"Longitude", type number}
+						},
+						"en-GB"
+					)
+				in
+					Typed
+

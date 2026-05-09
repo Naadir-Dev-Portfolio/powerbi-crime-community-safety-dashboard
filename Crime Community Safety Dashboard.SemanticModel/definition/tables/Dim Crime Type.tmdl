@@ -1,0 +1,50 @@
+table 'Dim Crime Type'
+	lineageTag: fd4170d1-000e-43ab-b2a7-2ffe4b830526
+
+	column 'Crime Type Key'
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 30fc52fc-2439-43e9-baf4-bfa7fc7ad1ba
+		summarizeBy: none
+		sourceColumn: CrimeTypeKey
+
+	column 'Crime Type'
+		dataType: string
+		lineageTag: 0e0d00da-3f4e-4e48-aa9d-e58b46b241eb
+		summarizeBy: none
+		sourceColumn: CrimeType
+		sortByColumn: 'Crime Sort Order'
+
+	column 'Crime Group'
+		dataType: string
+		lineageTag: 36aa1c72-b353-4419-a6df-251249a5e450
+		summarizeBy: none
+		sourceColumn: CrimeGroup
+
+	column 'Crime Sort Order'
+		dataType: int64
+		isHidden
+		lineageTag: d9572178-c23c-44c3-a9c9-97647ff290f3
+		summarizeBy: none
+		sourceColumn: CrimeSortOrder
+
+	partition 'Dim Crime Type' = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents(CuratedDataFolder & "\dim_crime_type.csv"), [Delimiter=",", Columns=4, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(
+						Headers,
+						{
+							{"CrimeTypeKey", Int64.Type},
+							{"CrimeType", type text},
+							{"CrimeGroup", type text},
+							{"CrimeSortOrder", Int64.Type}
+						},
+						"en-GB"
+					)
+				in
+					Typed
+

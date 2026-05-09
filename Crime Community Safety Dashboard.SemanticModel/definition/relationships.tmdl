@@ -1,0 +1,21 @@
+relationship b2023f3d-0d0b-4dde-b4fa-2f205b9f0001
+	fromColumn: 'Fact Crime Monthly'.'Date Key'
+	toColumn: 'Dim Date'.'Date Key'
+
+relationship b2023f3d-0d0b-4dde-b4fa-2f205b9f0002
+	fromColumn: 'Fact Crime Monthly'.'Crime Type Key'
+	toColumn: 'Dim Crime Type'.'Crime Type Key'
+
+relationship b2023f3d-0d0b-4dde-b4fa-2f205b9f0003
+	fromColumn: 'Fact Crime Monthly'.'Local Area Key'
+	toColumn: 'Dim Local Area'.'Local Area Key'
+
+relationship b2023f3d-0d0b-4dde-b4fa-2f205b9f0004
+	fromColumn: 'Dim Local Area'.'Force Key'
+	toColumn: 'Dim Force'.'Force Key'
+
+relationship e4cf2932-4360-41a8-9e99-b19c86e1f1b3
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Dim Date'.'Month Start'
+	toColumn: LocalDateTable_f55c7cde-3e9d-4a63-ac12-a76c17e2b7af.Date
+

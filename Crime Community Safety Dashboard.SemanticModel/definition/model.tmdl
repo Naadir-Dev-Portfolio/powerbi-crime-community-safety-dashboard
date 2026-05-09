@@ -1,0 +1,22 @@
+model Model
+	culture: en-GB
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-GB
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table 'Dim Date'
+ref table 'Dim Crime Type'
+ref table 'Dim Force'
+ref table 'Dim Local Area'
+ref table 'Fact Crime Monthly'
+ref table DateTableTemplate_8822b3f7-466e-4639-90e3-2cc3335d662a
+ref table LocalDateTable_f55c7cde-3e9d-4a63-ac12-a76c17e2b7af
+
+ref cultureInfo en-GB
+

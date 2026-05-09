@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Crime Community Safety Dashboard"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "429d786f-ed38-4771-b6d5-a05ccbcfecab"
+  }
+}

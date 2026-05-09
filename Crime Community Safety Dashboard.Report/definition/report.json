@@ -1,0 +1,114 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.2.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "CY26SU02",
+      "reportVersionAtImport": {
+        "visual": "2.6.0",
+        "report": "3.1.0",
+        "page": "2.3.0"
+      },
+      "type": "SharedResources"
+    }
+  },
+  "objects": {
+    "section": [
+      {
+        "properties": {
+          "verticalAlignment": {
+            "expr": {
+              "Literal": {
+                "Value": "'Top'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "resourcePackages": [
+    {
+      "name": "SharedResources",
+      "type": "SharedResources",
+      "items": [
+        {
+          "name": "CY26SU02",
+          "path": "BaseThemes/CY26SU02.json",
+          "type": "BaseTheme"
+        }
+      ]
+    },
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "Area3561490704845063.png",
+          "path": "Area3561490704845063.png",
+          "type": "Image"
+        },
+        {
+          "name": "Background-Texture26195869716763873.png",
+          "path": "Background-Texture26195869716763873.png",
+          "type": "Image"
+        },
+        {
+          "name": "court49285088260896937.png",
+          "path": "court49285088260896937.png",
+          "type": "Image"
+        },
+        {
+          "name": "forecast-analytics8037912575518424.png",
+          "path": "forecast-analytics8037912575518424.png",
+          "type": "Image"
+        },
+        {
+          "name": "home9024827341485859.png",
+          "path": "home9024827341485859.png",
+          "type": "Image"
+        },
+        {
+          "name": "information0026175831059931376.png",
+          "path": "information0026175831059931376.png",
+          "type": "Image"
+        },
+        {
+          "name": "logo9356618745838987.png",
+          "path": "logo9356618745838987.png",
+          "type": "Image"
+        },
+        {
+          "name": "NHW_Roundel_Today_Logo__CMYK_F5235814340162147.png",
+          "path": "NHW_Roundel_Today_Logo__CMYK_F5235814340162147.png",
+          "type": "Image"
+        },
+        {
+          "name": "powerbi_logo7843627364923983.png",
+          "path": "powerbi_logo7843627364923983.png",
+          "type": "Image"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "useStylableVisualContainerHeader": true,
+    "exportDataMode": "AllowSummarized",
+    "defaultDrillFilterOtherVisuals": true,
+    "allowChangeFilterTypes": true,
+    "useEnhancedTooltips": true,
+    "useDefaultAggregateDisplayName": true
+  }
+}

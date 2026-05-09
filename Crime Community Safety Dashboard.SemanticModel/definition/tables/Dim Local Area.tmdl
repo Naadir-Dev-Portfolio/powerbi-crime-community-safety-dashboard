@@ -1,0 +1,101 @@
+table 'Dim Local Area'
+	lineageTag: 14908f0c-2080-4dac-a9a7-3f937472b139
+
+	column 'Local Area Key'
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 8e6e1dec-3523-4c7e-bce0-0f0cea476425
+		summarizeBy: none
+		sourceColumn: LocalAreaKey
+
+	column 'Local Area Code'
+		dataType: string
+		isHidden
+		lineageTag: 521ca32f-14e4-42f5-966a-a23a41baac6c
+		summarizeBy: none
+		sourceColumn: LocalAreaCode
+
+	column 'Local Area Name'
+		dataType: string
+		lineageTag: 7989d77d-aefd-47ad-a447-b2d549765f24
+		summarizeBy: none
+		sourceColumn: LocalAreaName
+
+	column 'Area Label'
+		dataType: string
+		lineageTag: 55cffeb9-01fd-4c5c-aab5-8c908843cd12
+		summarizeBy: none
+		sourceColumn: AreaLabel
+
+	column 'Local Area Type'
+		dataType: string
+		lineageTag: 88b31d4a-1310-4b88-897c-19b5917c1ef8
+		summarizeBy: none
+		sourceColumn: LocalAreaType
+
+	column 'Force Key'
+		dataType: int64
+		isHidden
+		lineageTag: 7ff2a054-fcc6-4950-ae34-7136bb4a33fa
+		summarizeBy: none
+		sourceColumn: ForceKey
+
+	column 'Force Id'
+		dataType: string
+		isHidden
+		lineageTag: cb383207-717c-43c2-b33b-7f41719815d1
+		summarizeBy: none
+		sourceColumn: ForceId
+
+	column 'Force Name'
+		dataType: string
+		lineageTag: d104e4af-1e59-4395-8a70-c27ca961a343
+		summarizeBy: none
+		sourceColumn: ForceName
+
+	column Latitude
+		dataType: double
+		lineageTag: 580445c3-0c3b-421b-9f21-19375a648b4c
+		summarizeBy: none
+		sourceColumn: Latitude
+
+	column Longitude
+		dataType: double
+		lineageTag: 332c38a8-57b2-46ae-b820-a3058b580a69
+		summarizeBy: none
+		sourceColumn: Longitude
+
+	column 'Has Coordinates'
+		dataType: boolean
+		isHidden
+		lineageTag: fe2dcf4a-e1b3-487e-883f-8e8783163d22
+		summarizeBy: none
+		sourceColumn: HasCoordinates
+
+	partition 'Dim Local Area' = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents(CuratedDataFolder & "\dim_local_area.csv"), [Delimiter=",", Columns=11, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(
+						Headers,
+						{
+							{"LocalAreaKey", Int64.Type},
+							{"LocalAreaCode", type text},
+							{"LocalAreaName", type text},
+							{"AreaLabel", type text},
+							{"LocalAreaType", type text},
+							{"ForceKey", Int64.Type},
+							{"ForceId", type text},
+							{"ForceName", type text},
+							{"Latitude", type number},
+							{"Longitude", type number},
+							{"HasCoordinates", type logical}
+						},
+						"en-GB"
+					)
+				in
+					Typed
+
