@@ -7,8 +7,8 @@
   "imgFeatured": "powerbi-crime-community-safety-dashboard-featured.png",
   "desc": "Public crime analytics dashboard using official England and Wales police data to track whether crime is rising, which types are driving change, and which areas are emerging as hotspots.",
   "demo": "https://app.powerbi.com/view?r=eyJrIjoiOGEwNmYzNWMtYzM1MS00MGUxLWI2YjItYzFjYWQ4NmMxMzk0IiwidCI6IjFmMjM5NGIwLWJiZmUtNDZlYS04MDIyLTFhZjJiZjg4ZDBkZCJ9",
-  "code": "https://github.com/Naadir-Dev-Portfolio/powerbi-crime-community-safety-dashboard",
-  "details": "https://github.com/Naadir-Dev-Portfolio/powerbi-crime-community-safety-dashboard/blob/main/README.md",
+  "code": "https://github.com/Naadir-Dev-Portfolio/powerbi-crime-community-safety-dashboard/blob/main/README.md",
+  "details": "https://naadir-dev-portfolio.github.io/powerbi-crime-community-safety-dashboard/",
   "tags": [
     "Power BI",
     "DAX",
