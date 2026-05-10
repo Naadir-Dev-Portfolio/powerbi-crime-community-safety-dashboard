@@ -8,6 +8,8 @@
 
 <p>Built for public-data portfolio reviewers, analysts, and civic stakeholders who need a clear view of changing crime pressure without manually wrangling millions of police records.</p>
 
+<p><strong>Technical documentation:</strong> <a href="https://naadir-dev-portfolio.github.io/powerbi-crime-community-safety-dashboard/">View the published report documentation</a></p>
+
 <p>
   <a href="#overview">Overview</a> |
   <a href="#what-problem-it-solves">What It Solves</a> |
